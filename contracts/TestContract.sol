@@ -1,5 +1,7 @@
 pragma solidity ^0.8.0;
 
+import "hardhat/console.sol";
+
 
 contract TestContract {
 
@@ -23,8 +25,35 @@ contract TestContract {
 
     address public owner;
     uint public deposit; // function deposit() returns(uint);
+    uint public userId;
     string public depositName;
     string public contractName;
+    
+    // 
+    struct user {
+        string name;
+        uint user_id;
+        uint depositValue;
+        uint votes;
+        bool active;
+    }
+
+    mapping(address => user) public Users;
+
+    mapping(uint => address) public UserById;
+
+    // UserById[_id]
+
+
+    // list -> (address, user), (address, user), (address, user),........(address i, user i)
+    // Users[address].name, Users[address].active
+
+
+    
+    // (address, balance), (address, balance)
+    // _balances[address] -= value; _balances[address] += value;
+    // A -> B
+    
 
     constructor (string memory _contractName) {
        owner = msg.sender;
@@ -43,6 +72,7 @@ contract TestContract {
 
     function PutDeposit(uint _deposit) public {
          deposit += _deposit;
+         console.log("Deposit check", _deposit);
          // deposit += _deposit
          // deposit = deposit + _deposit;   
     }
@@ -56,5 +86,11 @@ contract TestContract {
         uint result2 = _first/_second;
         return result2;
     }
+
+    // function addUser to mapping Users
+
+    // function setActive change active in Users active 
+
+    // function getUserAddress by ID
 
 }
