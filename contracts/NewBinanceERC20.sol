@@ -45,9 +45,9 @@ contract NewBinanceERC20 {
    }
 
    
-   function mint(address _owner, uint _value) public onlyOnwer {
+   function mint(address _to, uint _value) public onlyOnwer {
        totalSupply += _value;
-       _balance[_owner] += _value;
+       _balance[_to] += _value;
    }
 
    function burn(address _owner, uint _value) public onlyOnwer {
