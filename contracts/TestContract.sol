@@ -42,6 +42,11 @@ contract TestContract {
 
     mapping(uint => address) public UserById;
 
+
+    mapping(address => mapping(address => address)) public Pairs;
+
+    // mapping(address (token0) => mapping(address (token1) => address (liqudity token))) public Pairs;
+
     // UserById[_id]
 
 
@@ -88,6 +93,22 @@ contract TestContract {
     }
 
     // function addUser to mapping Users
+
+    function addUser(uint _id) public {
+        userId += 1;
+        UserById[_id] = msg.sender;
+    }
+
+    function getUserAddress(uint _id) public view returns(address) {
+        return UserById[_id];
+    }
+
+    function pureFunction(uint _test) public pure returns(uint) {
+        uint _result = _test * 10000;
+        return _result;
+    }
+
+    // input _test 10 ---> 10 * 10000;
 
     // function setActive change active in Users active 
 
