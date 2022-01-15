@@ -6,8 +6,24 @@ async function main() {
   
   const TestContract = await hre.ethers.getContractFactory("TestContract");
   const testContract = await TestContract.deploy("First Contract from HardHat");
-
   await testContract.deployed();
+
+  const WBNB = await hre.ethers.getContractFactory("WBNB");
+  const wbnb = await WBNB.deploy();
+  await wbnb.deployed();
+
+
+  // DEPLOY TEST TOKENS
+  const USDT = await hre.ethers.getContractFactory("USDT")
+  const usdttoken = await USDT.deploy();
+  await usdttoken.deployed();
+  console.log('TEST USDT:', usdttoken.address);
+
+  const CourseToken  = await hre.ethers.getContractFactory("CourseToken")
+  const coursetoken = await CourseToken.deploy();
+  await coursetoken.deployed();
+
+  console.log('COURSE TOKEN:', coursetoken.address);
 
   console.log("Test contract deployed to:", testContract.address);
 }
