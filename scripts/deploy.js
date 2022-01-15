@@ -22,10 +22,15 @@ async function main() {
   const CourseToken  = await hre.ethers.getContractFactory("CourseToken")
   const coursetoken = await CourseToken.deploy();
   await coursetoken.deployed();
-
   console.log('COURSE TOKEN:', coursetoken.address);
 
-  console.log("Test contract deployed to:", testContract.address);
+  // DEPLOY FACTORY CONTRACT
+  const Factory = await hre.ethers.getContractFactory("Factory")
+  const factorycontract = await Factory.deploy();
+  await factorycontract.deployed()
+  console.log("FACTORY CONTRACT:", factorycontract.address);
+
+  
 }
 
 // We recommend this pattern to be able to use async/await everywhere

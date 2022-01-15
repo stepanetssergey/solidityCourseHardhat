@@ -13,6 +13,9 @@ describe("Test contract", function () {
     WBNB = await ethers.getContractFactory("WBNB");
     wbnb = await WBNB.deploy();
 
+    // get test tokens
+    
+
     [...addrs] = await ethers.getSigners()
 
     //console.log(addrs[0].address)
