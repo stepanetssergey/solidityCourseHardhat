@@ -1,11 +1,14 @@
 pragma solidity ^0.8.0;
 
 import './NewBinancePair.sol';
+// import './interfaces/INewBinancePair.sol';
 
 contract Factory {
 
 
     uint public lengthAllPairs;
+    address[] public allPairs; // [ пара1, пара2, пара3]
+    // allPairs(0) , allPairs(1) 
     mapping(address => mapping(address => address)) public Pairs;
     // (address1,(address -> address of pair)),()
 
@@ -18,9 +21,15 @@ contract Factory {
        // 1 create of pair
        NewBinancePair _pool = new NewBinancePair{salt: keccak256(abi.encode(token0, token1))}();
        // initialize
+        _pool.initialize(token0, token1);
+       // INewBinancePair _newPool = INewBinancePair(address(_pool)); // =  на этом адресе есть контракт с функцией и как ее вызвать
+       // что мы можем вызвать (название функции) + как эту функцию вызывать ()
+       // _newPool.initialize(token0, token1); - address(this)
        lengthAllPairs += 1;
        Pairs[token0][token1] = address(_pool);
        Pairs[token1][token0] = address(_pool);
+       allPairs.push(address(_pool));
+       // Pairs(usdt-address, courseToken address) = address пары
        return address(_pool);
     }
 

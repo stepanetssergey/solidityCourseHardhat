@@ -14,7 +14,17 @@ describe("Test contract", function () {
     wbnb = await WBNB.deploy();
 
     // get test tokens
-    
+    USDT = await hre.ethers.getContractFactory("USDT")
+    usdttoken = await USDT.deploy();
+
+    CourseToken  = await hre.ethers.getContractFactory("CourseToken")
+    coursetoken = await CourseToken.deploy();
+
+    // factory contract
+    Factory = await ethers.getContractFactory("Factory")
+    factory = await Factory.deploy();
+
+
 
     [...addrs] = await ethers.getSigners()
 
@@ -39,6 +49,16 @@ describe("Test contract", function () {
       await wbnb.connect(addrs[0]).withdraw(ethers.utils.parseEther("1.0"))
       const balanceAfter = await wbnb.balanceOf(addrs[0].address);
       console.log('Balance after', balanceAfter.toString())
+    })
+
+    it("Add pair for tokens", async () => {
+      await factory.createPair(usdttoken.address, coursetoken.address);
+      const allPairsLength = await factory.lengthAllPairs();
+      console.log(allPairsLength.toString());
+      const pairAddress = await factory.Pairs(usdttoken.address, coursetoken.address)
+      console.log(pairAddress)
+      const pairAddressByIndex = await factory.allPairs(0)
+      console.log(pairAddressByIndex);
     })
 
   })

@@ -9,8 +9,8 @@ contract NewBinanceERC20 {
    // symbol - 
    // tokenSupply - 
 
-   string public name;
-   string public symbol;
+   string public name = "NewBinanceLP";
+   string public symbol = "NFLP";
    uint totalSupply;
    address public owner;
 
