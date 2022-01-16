@@ -3,6 +3,7 @@ pragma solidity ^0.8.0;
 import './interfaces/IFactory.sol';
 import './interfaces/IBEP.sol';
 import './interfaces/INewBinancePair.sol';
+import './libraries/NewBinanceLibrary.sol';
 
 contract NewBinanceRouter {
      
@@ -36,11 +37,27 @@ contract NewBinanceRouter {
         // 0. Проверить есть ли пара с такими токенами и если не то создать новую пару
         // 1. get pair address
         IFactory _factoryInstance = IFactory(factory);
+        // create pair if pair is zero
         address pair = _factoryInstance.Pairs(_token0, _token1);
+        if (pair == address(0)) {
+            _factoryInstance.createPair(_token0, _token1);
+            pair = _factoryInstance.Pairs(_token0, _token1);
+        }
         IBEP20(_token0).transferFrom(msg.sender, pair, _amount0);
         IBEP20(_token1).transferFrom(msg.sender, pair, _amount1);
         uint liquidity = INewBinancePair(pair).mint(msg.sender);
         return liquidity;
+     }
+
+
+     function swapExactTokensToTokens(uint amountIn, address token0, address token1) public {
+         uint amountOut = NewBinanceLibrary.getAmountsOut(factory, token0, token1, amountIn);
+         IFactory _factoryInstance = IFactory(factory);
+        address pair = _factoryInstance.Pairs(token0, token1);
+        IBEP20(token0).transferFrom(msg.sender, pair, amountIn);
+        uint amountOut0 = 0;
+        uint amountOut1 = amountOut;
+        INewBinancePair(pair).swap(amountOut0, amountOut1, msg.sender, new bytes(0));
      }
 
 

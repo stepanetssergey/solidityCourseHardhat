@@ -14,3 +14,8 @@ contract USDT is BEP20Token {
     }
 
 }
+
+//  mapping(address => mapping(address => uint256)) private _allowances;
+//  owner -> sender -> amount
+// balanceOf[owner] = 1000
+// owner -> sender (my address) -> 1000

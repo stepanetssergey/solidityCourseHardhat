@@ -30,6 +30,11 @@ async function main() {
   await factorycontract.deployed()
   console.log("FACTORY CONTRACT:", factorycontract.address);
 
+  // DEPLOY ROUTER
+  const Router = await hre.ethers.getContractFactory("NewBinanceRouter")
+  const router = await Router.deploy(factorycontract.address);
+  await router.deployed()
+  console.log("ROUTER CONTRACT:", router.address);
   
 }
 

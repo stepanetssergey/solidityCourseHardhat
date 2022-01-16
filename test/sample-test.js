@@ -1,6 +1,8 @@
 const { expect } = require("chai");
 const { ethers } = require("hardhat");
 const Test = require("mocha/lib/test");
+const BEB20Abi = require('../artifacts/contracts/interfaces/IBEP.sol/IBEP20.json');
+// address - rpc (fuction, input, output)
 
 describe("Test contract", function () {
   let TestContract;
@@ -14,15 +16,19 @@ describe("Test contract", function () {
     wbnb = await WBNB.deploy();
 
     // get test tokens
-    USDT = await hre.ethers.getContractFactory("USDT")
+    USDT = await ethers.getContractFactory("USDT")
     usdttoken = await USDT.deploy();
 
-    CourseToken  = await hre.ethers.getContractFactory("CourseToken")
+    CourseToken  = await ethers.getContractFactory("CourseToken")
     coursetoken = await CourseToken.deploy();
 
     // factory contract
     Factory = await ethers.getContractFactory("Factory")
     factory = await Factory.deploy();
+
+    // router contract
+    Router = await ethers.getContractFactory("NewBinanceRouter")
+    router = await Router.deploy(factory.address);
 
 
 
@@ -35,7 +41,7 @@ describe("Test contract", function () {
 
   describe("Test case contract name", function () {
     
-    it("Add coint for getting WBNB", async () => {
+    it("Add coin for getting WBNB", async () => {
       // send 1 ether to WBNB
       const admin = addrs[0]
       console.log('WBNB address', wbnb.address)
@@ -59,6 +65,39 @@ describe("Test contract", function () {
       console.log(pairAddress)
       const pairAddressByIndex = await factory.allPairs(0)
       console.log(pairAddressByIndex);
+    })
+
+    it("Balance tokens checking", async () => {
+       const usdtBalance = await usdttoken.balanceOf(addrs[0].address);
+       console.log(usdtBalance.toString());
+       const coursetokenBalance = await coursetoken.balanceOf(addrs[0].address)
+       console.log('Balance course:', coursetokenBalance.toString())
+    })
+
+    it("Add liquidity", async () => {
+      var liquidityAmount = ethers.utils.parseEther("1");
+      await usdttoken.connect(addrs[0]).approve(router.address,liquidityAmount)
+      await coursetoken.connect(addrs[0]).approve(router.address,liquidityAmount)
+      const liquidityTrx = await router.connect(addrs[0])
+                                 .addLiquidity(usdttoken.address, coursetoken.address,liquidityAmount,liquidityAmount)
+      const liquidity = await liquidityTrx.wait();
+      // console.log('Liquidity:', liquidity);
+      const pairAddress = await factory.Pairs(usdttoken.address, coursetoken.address);
+      console.log('Created pair', pairAddress);
+      let provider = await ethers.getDefaultProvider();
+      const lpContract = new ethers.Contract(pairAddress, BEB20Abi.abi, provider);
+      console.log(lpContract)
+      console.log(addrs[0].address)
+      const balanceLp = await lpContract.connect(addrs[0]).balanceOf(addrs[0].address);
+      console.log(balanceLp.toString())
+    })
+
+    it("Swap in pair", async () => {
+      // check balance usdt
+      // check balance coursetoken
+      // call router swap 
+      // check balacne after swap of both tokens
+      
     })
 
   })
